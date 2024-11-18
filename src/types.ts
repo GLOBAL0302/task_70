@@ -5,6 +5,11 @@ export interface IContactFormState{
   photo:string
 }
 
+export interface IContactApi{
+  [id:string]:IContactFormState;
+}
+
 export interface IAllContactsState extends IContactFormState{
   id:string
 }
+

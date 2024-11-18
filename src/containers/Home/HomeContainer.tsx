@@ -1,8 +1,12 @@
+import { Box } from '@mui/material';
+import AllContacts from '../../components/AllContacts/AllContacts.tsx';
+
 const HomeContainer = () => {
+
   return (
-    <div>
-      asd
-    </div>
+    <Box component="div">
+      <AllContacts/>
+    </Box>
   );
 };
 

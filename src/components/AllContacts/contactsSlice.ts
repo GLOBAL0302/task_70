@@ -1,18 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IAllContactsState } from '../../types.ts';
-import { postContactInfo } from './contactsThunks.ts';
+import { fetchAllContacts, postContactInfo } from './contactsThunks.ts';
 
 
 interface contactsSliceState{
-  contacts:IAllContactsState[],
+  contacts:IAllContactsState[] | null,
   fetchLoading:boolean,
-  submitLoading:boolean,
+  postLoading:boolean,
 }
 
 const initialState:contactsSliceState = {
   contacts: [],
   fetchLoading:false,
-  submitLoading:false
+  postLoading:false
 }
 
 
@@ -24,18 +24,37 @@ export const contactsSlice = createSlice({
   },
   extraReducers:(builder)=>{
     builder
+      .addCase(fetchAllContacts.pending, state=>{
+        state.fetchLoading = true;
+      })
+      .addCase(fetchAllContacts.fulfilled, (state, {payload})=>{
+        state.fetchLoading = false;
+        state.contacts = payload
+      })
+      .addCase(fetchAllContacts.rejected, state=>{
+        state.fetchLoading = false;
+      })
+    builder
       .addCase(postContactInfo.pending, state=>{
-        state.submitLoading = true;
+        state.postLoading = true;
       })
       .addCase(postContactInfo.fulfilled, state=>{
-        state.submitLoading = false;
+        state.postLoading = false;
       })
       .addCase(postContactInfo.rejected, state=>{
-        state.submitLoading = false;
+        state.postLoading = false;
       })
+  },
+  selectors:{
+    selectAllContacts:(state)=>state.contacts,
+    selectFetchLoading: (state)=>state.fetchLoading,
+    selectPostLoading:(state)=> state.postLoading
   }
 })
 
 export const contactsReducer = contactsSlice.reducer
 export const {} = contactsSlice.actions
-export const {} = contactsSlice.selectors
+export const {
+  selectAllContacts
+  ,selectFetchLoading
+  ,selectPostLoading} = contactsSlice.selectors

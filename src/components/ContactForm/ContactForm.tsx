@@ -3,7 +3,7 @@ import { FormEvent, useState } from 'react';
 import { IContactFormState } from '../../types.ts';
 import { useAppDispatch } from '../../app/hooks.ts';
 import { postContactInfo } from '../AllContacts/contactsThunks.ts';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const initialState = {
   name:"",
@@ -54,9 +54,11 @@ const ContactForm = () => {
           <Button variant="contained" color="success" type="submit">
             Save
           </Button>
-          <Button variant="contained" color="warning" type="button">
-            Back to Contacts
-          </Button>
+         <NavLink to='/'>
+           <Button variant="contained" color="warning" type="button">
+             Back to Contacts
+           </Button>
+         </NavLink>
         </Grid2>
       </Grid2>
     </>
