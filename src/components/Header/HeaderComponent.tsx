@@ -12,7 +12,9 @@ const HeaderComponent = () => {
             borderRadius={5}
             padding={1}
             sx={{
-            border: '1px solid white'}}>
+              border: '1px solid white',
+            }}
+          >
             <NavLink to="/">
               <Grid2 display={'flex'} alignItems={'center'} gap={2}>
                 <ContactPhoneIcon fontSize="large" />
@@ -25,9 +27,12 @@ const HeaderComponent = () => {
           <Grid2
             borderRadius={5}
             padding={1}
-            gap={1} sx={{
-            marginLeft: 'auto', border: '1px solid white',
-          }}>
+            gap={1}
+            sx={{
+              marginLeft: 'auto',
+              border: '1px solid white',
+            }}
+          >
             <NavLink to="/addContact">
               <Grid2 container spacing={2} alignItems={'center'}>
                 <Typography variant="h6" component="h6">

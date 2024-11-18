@@ -1,60 +1,67 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { IAllContactsState } from '../../types.ts';
-import { fetchAllContacts, postContactInfo } from './contactsThunks.ts';
+import { IAllContactsState, IContactFormState } from '../../types.ts';
+import { fetchAllContacts, getOneContactById, postContactInfo } from './contactsThunks.ts';
 
-
-interface contactsSliceState{
-  contacts:IAllContactsState[] | null,
-  fetchLoading:boolean,
-  postLoading:boolean,
+interface contactsSliceState {
+  contacts: IAllContactsState[] | null;
+  oneContact: IContactFormState | null;
+  fetchLoading: boolean;
+  postLoading: boolean;
 }
 
-const initialState:contactsSliceState = {
+const initialState: contactsSliceState = {
   contacts: [],
-  fetchLoading:false,
-  postLoading:false
-}
-
+  oneContact: null,
+  fetchLoading: false,
+  postLoading: false,
+};
 
 export const contactsSlice = createSlice({
-  name: "contacts",
+  name: 'contacts',
   initialState,
-  reducers:{
-
-  },
-  extraReducers:(builder)=>{
+  reducers: {},
+  extraReducers: (builder) => {
     builder
-      .addCase(fetchAllContacts.pending, state=>{
+      .addCase(fetchAllContacts.pending, (state) => {
         state.fetchLoading = true;
       })
-      .addCase(fetchAllContacts.fulfilled, (state, {payload})=>{
+      .addCase(fetchAllContacts.fulfilled, (state, { payload }) => {
         state.fetchLoading = false;
-        state.contacts = payload
+        state.contacts = payload;
       })
-      .addCase(fetchAllContacts.rejected, state=>{
+      .addCase(fetchAllContacts.rejected, (state) => {
         state.fetchLoading = false;
-      })
+      });
     builder
-      .addCase(postContactInfo.pending, state=>{
+      .addCase(postContactInfo.pending, (state) => {
         state.postLoading = true;
       })
-      .addCase(postContactInfo.fulfilled, state=>{
+      .addCase(postContactInfo.fulfilled, (state) => {
         state.postLoading = false;
       })
-      .addCase(postContactInfo.rejected, state=>{
+      .addCase(postContactInfo.rejected, (state) => {
         state.postLoading = false;
+      });
+    builder
+      .addCase(getOneContactById.pending, (state) => {
+        state.fetchLoading = true;
       })
+      .addCase(getOneContactById.fulfilled, (state, { payload }) => {
+        state.fetchLoading = false;
+        state.oneContact = payload;
+      })
+      .addCase(getOneContactById.rejected, (state) => {
+        state.fetchLoading = false;
+      });
   },
-  selectors:{
-    selectAllContacts:(state)=>state.contacts,
-    selectFetchLoading: (state)=>state.fetchLoading,
-    selectPostLoading:(state)=> state.postLoading
-  }
-})
+  selectors: {
+    selectAllContacts: (state) => state.contacts,
+    selectFetchLoading: (state) => state.fetchLoading,
+    selectPostLoading: (state) => state.postLoading,
+    selectOneContact: (state) => state.oneContact,
+  },
+});
 
-export const contactsReducer = contactsSlice.reducer
-export const {} = contactsSlice.actions
-export const {
-  selectAllContacts
-  ,selectFetchLoading
-  ,selectPostLoading} = contactsSlice.selectors
+export const contactsReducer = contactsSlice.reducer;
+export const {} = contactsSlice.actions;
+export const { selectAllContacts, selectFetchLoading, selectPostLoading, selectOneContact } = contactsSlice.selectors;
