@@ -1,12 +1,22 @@
 import { Box, CircularProgress, Modal } from '@mui/material';
 import AllContacts from '../../components/AllContacts/AllContacts.tsx';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ContactForm from '../../components/ContactForm/ContactForm.tsx';
 import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
-import { getOneContactById } from '../../components/AllContacts/contactsThunks.ts';
-import { selectFetchLoading, selectOneContact } from '../../components/AllContacts/contactsSlice.ts';
+import {
+  deleteOneContactById,
+  getOneContactById,
+  updateOneContactById,
+} from '../../components/AllContacts/contactsThunks.ts';
+import {
+  deleteContactReducer,
+  selectFetchLoading,
+  selectOneContact,
+  updateContactReducer,
+} from '../../components/AllContacts/contactsSlice.ts';
+import { IContactFormState } from '../../types.ts';
 
 const style = {
   position: 'absolute',
@@ -27,9 +37,11 @@ interface IProps {
 const HomeContainer: React.FC<IProps> = ({ contactSelected = false }) => {
   const [_modal, setModal] = useState(contactSelected);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const oneContact = useAppSelector(selectOneContact);
   const fetchLoading = useAppSelector(selectFetchLoading);
   const { id } = useParams();
+
   const fetchOneContact = useCallback(async () => {
     if (id) await dispatch(getOneContactById(id));
   }, [id]);
@@ -40,10 +52,20 @@ const HomeContainer: React.FC<IProps> = ({ contactSelected = false }) => {
 
   useEffect(() => {
     void fetchOneContact();
-    console.log(oneContact);
   }, [id]);
 
-  console.log(oneContact);
+  const updateContact = async (contact: IContactFormState) => {
+    id && (await dispatch(updateOneContactById({ id, contactInfo: contact })));
+    dispatch(updateContactReducer({ id, contactInfo: contact }));
+    navigate('/');
+  };
+
+  const deleteContact = async () => {
+    id && (await dispatch(deleteOneContactById(id)));
+    dispatch(deleteContactReducer(id));
+    navigate('/');
+  };
+
   return (
     <Box component="div">
       <AllContacts />
@@ -59,7 +81,20 @@ const HomeContainer: React.FC<IProps> = ({ contactSelected = false }) => {
               <HighlightOffIcon fontSize="large" />
             </NavLink>
           </Box>
-          {fetchLoading ? <CircularProgress /> : <>{oneContact && <ContactForm edit={true} contact={oneContact} />}</>}
+          {fetchLoading ? (
+            <CircularProgress />
+          ) : (
+            <>
+              {oneContact && (
+                <ContactForm
+                  updateContact={updateContact}
+                  deleteContact={deleteContact}
+                  edit={true}
+                  contact={oneContact}
+                />
+              )}
+            </>
+          )}
         </Box>
       </Modal>
     </Box>

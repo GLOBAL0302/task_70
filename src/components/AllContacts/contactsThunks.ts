@@ -39,6 +39,9 @@ export const deleteOneContactById = createAsyncThunk<void, string>('deleteOneCon
   await axiosApi.delete(`contacts/${contactId}.json`);
 });
 
-export const updateOneContactById = createAsyncThunk('updateOneContactById', async (contactId) => {
-  await axiosApi.put(`contacts/${contactId}.json`);
-});
+export const updateOneContactById = createAsyncThunk<void, { id: string; contactInfo: IContactFormState }>(
+  'updateOneContactById',
+  async ({ id, contactInfo }) => {
+    await axiosApi.put(`contacts/${id}.json`, contactInfo);
+  },
+);

@@ -8,6 +8,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 interface IProps {
   contact?: IContactFormState;
   edit?: boolean;
+  deleteContact?: VoidFunction;
+  updateContact?: (contact: IContactFormState) => void;
 }
 
 const initialState = {
@@ -17,7 +19,7 @@ const initialState = {
   photo: '',
 };
 
-const ContactForm: React.FC<IProps> = ({ contact = initialState, edit = false }) => {
+const ContactForm: React.FC<IProps> = ({ contact = initialState, edit = false, deleteContact, updateContact }) => {
   const [contactInfo, setContactInfo] = useState<IContactFormState>({ ...contact });
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -34,7 +36,12 @@ const ContactForm: React.FC<IProps> = ({ contact = initialState, edit = false })
 
   const formSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    await dispatch(postContactInfo(contactInfo));
+
+    if (edit) {
+      updateContact && updateContact(contactInfo);
+    } else {
+      await dispatch(postContactInfo(contactInfo));
+    }
     setContactInfo(initialState);
     navigate('/');
   };
@@ -99,7 +106,7 @@ const ContactForm: React.FC<IProps> = ({ contact = initialState, edit = false })
             {edit ? 'Edit' : 'Save'}
           </Button>
           {edit ? (
-            <Button variant="contained" color="error" type="button">
+            <Button onClick={deleteContact} variant="contained" color="error" type="button">
               Delete
             </Button>
           ) : (

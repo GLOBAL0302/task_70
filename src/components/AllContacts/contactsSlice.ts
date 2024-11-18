@@ -19,7 +19,24 @@ const initialState: contactsSliceState = {
 export const contactsSlice = createSlice({
   name: 'contacts',
   initialState,
-  reducers: {},
+  reducers: {
+    deleteContactReducer: (state, { payload }) => {
+      state.contacts = state.contacts && state.contacts.filter((contact) => contact.id !== payload);
+    },
+    updateContactReducer: (state, { payload }) => {
+      state.contacts =
+        state.contacts &&
+        state.contacts.map((contact) => {
+          if (contact.id === payload.id) {
+            return {
+              id: payload.id,
+              ...payload.contactInfo,
+            };
+          }
+          return contact;
+        });
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllContacts.pending, (state) => {
@@ -63,5 +80,5 @@ export const contactsSlice = createSlice({
 });
 
 export const contactsReducer = contactsSlice.reducer;
-export const {} = contactsSlice.actions;
+export const { deleteContactReducer, updateContactReducer } = contactsSlice.actions;
 export const { selectAllContacts, selectFetchLoading, selectPostLoading, selectOneContact } = contactsSlice.selectors;
